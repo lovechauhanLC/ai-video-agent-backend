@@ -10,7 +10,25 @@ const app = express();
 
 
 app.use(express.json());
-app.use(cors());
+import cors from "cors";
+
+const allowedOrigins = [
+  "http://localhost:5173", // local dev (vite)
+  "https://ai-video-agent-frontend.vercel.app" // your Vercel frontend
+];
+
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true,
+  })
+);
 
 app.use("/api/convo", cviRoutes);
 
